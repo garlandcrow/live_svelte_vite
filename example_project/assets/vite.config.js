@@ -1,38 +1,30 @@
-import path from "path"
-import { defineConfig } from "vite"
-
-import vue from "@vitejs/plugin-vue"
-import liveVuePlugin from "live_vue/vitePlugin"
-import vuetify from "vite-plugin-vuetify"
+import path from "path";
+import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+import liveSvelte from "live_svelte/vitePlugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
-  const isDev = command !== "build"
+  const isDev = command !== "build";
 
   return {
     base: isDev ? undefined : "/assets",
     publicDir: "static",
-    plugins: [vue(), liveVuePlugin(), vuetify({ autoImport: { labs: true } })],
+    plugins: [svelte(), liveSvelte()],
     worker: {
       format: "es",
     },
     ssr: {
       // we need it, because in SSR build we want no external
       // and in dev, we want external for fast updates
-      noExternal: ["vuetify"],
-    },
-    resolve: {
-      alias: {
-        vue: path.resolve(__dirname, "node_modules/vue"),
-        "@": path.resolve(__dirname, "."),
-      },
+      noExternal: isDev ? undefined : true,
     },
     optimizeDeps: {
       // these packages are loaded as file:../deps/<name> imports
       // so they're not optimized for development by vite by default
       // we want to enable it for better DX
       // more https://vitejs.dev/guide/dep-pre-bundling#monorepos-and-linked-dependencies
-      include: ["phoenix", "phoenix_html", "phoenix_live_view"],
+      include: ["live_svelte", "phoenix", "phoenix_html", "phoenix_live_view"],
     },
     build: {
       commonjsOptions: { transformMixedEsModules: true },
@@ -53,5 +45,5 @@ export default defineConfig(({ command }) => {
         },
       },
     },
-  }
-})
+  };
+});

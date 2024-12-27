@@ -1,21 +1,47 @@
 import Config
 
+# Configure your database
+config :remnant, Remnant.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "remnant_dev",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
+config :live_svelte,
+  vite_host: "http://localhost:5173",
+  ssr_module: LiveSvelte.SSR.ViteJS
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :live_vue_examples, LiveVueExamplesWeb.Endpoint,
+config :remnant, RemnantWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "O6lODkS+7Il9/crSN+hOVVmqbf1pmm854unf8EY/hyWfx2dmUU7+DnISMEOcJqwa",
+  secret_key_base: "+ZTTAUMB5uDSdd7aG3MQrGI2z9TnPSY/1II4ZgjTARiJaUTL+k32rdMIueQo9gGA",
   watchers: [
-    npm: ["run", "dev", cd: Path.expand("../assets", __DIR__)]
+    npm: ["--silent", "run", "dev", cd: Path.expand("../assets", __DIR__)]
+  ],
+  live_reload: [
+    notify: [
+      live_view: [
+        ~r"lib/remnant_web/core_components.ex$",
+        ~r"lib/remnant_web/(live|components)/.*(ex|heex)$"
+      ]
+    ],
+    patterns: [
+      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"lib/remnant_web/controllers/.*(ex|heex)$"
+    ]
   ]
 
 # ## SSL Support
@@ -42,23 +68,17 @@ config :live_vue_examples, LiveVueExamplesWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :live_vue_examples, LiveVueExamplesWeb.Endpoint,
-  reloadable_apps: [:live_vue, :live_vue_examples_web, :live_vue_examples],
+config :remnant, RemnantWeb.Endpoint,
   live_reload: [
-    notify: [
-      live_view: [
-        ~r"lib/live_vue_examples_web/core_components.ex$",
-        ~r"lib/live_vue_examples_web/(live|components)/.*(ex|heex)$"
-      ]
-    ],
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"lib/live_vue_examples_web/controllers/.*(ex|heex)$"
+      ~r"priv/gettext/.*(po)$",
+      ~r"lib/remnant_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :live_vue_examples, dev_routes: true
+config :remnant, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
@@ -72,11 +92,9 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :phoenix_live_view,
   # Include HEEx debug annotations as HTML comments in rendered markup
-  debug_heex_annotations: false,
+  debug_heex_annotations: true,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
 
-config :live_vue,
-  vite_host: "http://localhost:5173",
-  ssr_module: LiveVue.SSR.ViteJS,
-  ssr_filepath: "./vue/server.ts"
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false

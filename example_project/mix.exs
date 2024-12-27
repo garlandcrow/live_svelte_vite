@@ -1,9 +1,9 @@
-defmodule LiveVueExamples.MixProject do
+defmodule Remnant.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :live_vue_examples,
+      app: :remnant,
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -18,7 +18,7 @@ defmodule LiveVueExamples.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {LiveVueExamples.Application, []},
+      mod: {Remnant.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -32,26 +32,31 @@ defmodule LiveVueExamples.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.12"},
-      {:phoenix_html, "~> 4.0"},
+      {:phoenix, "~> 1.7.18"},
+      {:phoenix_ecto, "~> 4.5"},
+      {:ecto_sql, "~> 3.10"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.20.2"},
+      {:phoenix_live_view, "~> 1.0.0"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:heroicons,
-       github: "tailwindlabs/heroicons", tag: "v2.1.1", sparse: "optimized", app: false, compile: false, depth: 1},
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
+      {:swoosh, "~> 1.5"},
+      {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
+      {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.2"},
-      {:live_vue, path: ".."},
-
-      # overriden with a forked version with package.json
-      # remove when https://github.com/revelrylabs/elixir-nodejs/pull/89 is released
-      # you shouldn't have to do this in your project
-      # here it's needed because live_vue has type: module in package.json and it's a parent dir of this project
-      {:nodejs, github: "Valian/elixir-nodejs", branch: "master", override: true}
+      {:bandit, "~> 1.5"},
+      {:live_svelte, path: "../live_svelte_vite"}
     ]
   end
 
@@ -63,12 +68,12 @@ defmodule LiveVueExamples.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup", "cmd --cd assets npm install"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["cmd --cd assets npm install"],
-      "assets.build": [
-        "cmd --cd assets npm run build",
-        "cmd --cd assets npm run build-server"
-      ],
+      "assets.build": ["cmd --cd assets npm run build", "cmd --cd assets npm run build-server"],
       "assets.deploy": [
         "cmd --cd assets npm run build",
         "cmd --cd assets npm run build-server",

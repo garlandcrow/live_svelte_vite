@@ -1,43 +1,40 @@
 {
-  "name": "live_vue",
-  "version": "0.1.0",
-  "description": "E2E reactivity for Vue and LiveView",
+  "name": "live_svelte",
+  "version": "0.15.0-rc.6",
+  "description": "",
   "license": "MIT",
-  "author": "Jakub Skałecki <jakub@skalecki.dev>",
+  "author": "Wout De Puysseleir <contact@wout.space>",
   "type": "module",
   "scripts": {
-    "format": "npx prettier --write assets",
+    "format": "npx prettier --write .",
     "build": "rm -rf priv/static && tsc --project tsconfig.client.json && tsc --project tsconfig.server.json",
     "dev": "concurrently \"tsc --watch --project tsconfig.client.json\" \"tsc --watch --project tsconfig.server.json\""
   },
   "devDependencies": {
-    "@types/node": "^22.9.1",
+    "@types/node": "^22.10.2",
     "@types/phoenix_live_view": "^0.20.0",
-    "concurrently": "^9.0.1",
-    "prettier": "2.8.7",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8",
-    "vue": "^3.5.10"
+    "concurrently": "^9.1.0",
+    "prettier": "3.3.3",
+    "prettier-plugin-svelte": "^3.2.7",
+    "svelte": "^5.13.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
   },
   "main": "priv/static/index.js",
   "types": "priv/static/types.d.ts",
   "exports": {
-    "./vitePlugin": {
-      "import": "./priv/static/vitePlugin.js",
-      "types": "./priv/static/vitePlugin.d.ts"
-    },
-    "./server": {
-      "import": "./priv/static/server.js",
-      "types": "./priv/static/server.d.ts"
-    },
     ".": {
       "import": "./priv/static/index.js",
       "types": "./priv/static/index.d.ts"
+    },
+    "./vitePlugin": {
+      "import": "./priv/static/vitePlugin.js",
+      "types": "./priv/static/vitePlugin.d.ts"
     }
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Valian/live_vue.git"
+    "url": "git://github.com/woutdp/live_svelte.git"
   },
   "files": [
     "README.md",
@@ -45,9 +42,5 @@
     "package.json",
     "priv/static/*",
     "priv/static/*.d.ts"
-  ],
-  "overrides": {
-    "nanoid": "^3.3.8",
-    "rollup": "^4.22.4"
-  }
+  ]
 }

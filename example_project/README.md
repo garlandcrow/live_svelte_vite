@@ -1,4 +1,4 @@
-# LiveVueExamples
+# Remnant
 
 To start your Phoenix server:
 

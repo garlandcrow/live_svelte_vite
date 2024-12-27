@@ -7,19 +7,29 @@
 # General application configuration
 import Config
 
-config :live_vue_examples,
+config :remnant,
+  ecto_repos: [Remnant.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
-config :live_vue_examples, LiveVueExamplesWeb.Endpoint,
+config :remnant, RemnantWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: LiveVueExamplesWeb.ErrorHTML, json: LiveVueExamplesWeb.ErrorJSON],
+    formats: [html: RemnantWeb.ErrorHTML, json: RemnantWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: LiveVueExamples.PubSub,
-  live_view: [signing_salt: "+aOlrIce"]
+  pubsub_server: Remnant.PubSub,
+  live_view: [signing_salt: "O78HSWdS"]
+
+# Configures the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :remnant, Remnant.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configures Elixir's Logger
 config :logger, :console,
