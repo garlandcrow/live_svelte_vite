@@ -74,8 +74,9 @@ defmodule LiveSvelte.MixProject do
 
   defp aliases do
     [
-      "assets.build": ["cmd --cd assets node build.js"],
-      "assets.watch": ["cmd --cd assets node build.js --watch"]
+      setup: ["deps.get", "cmd npm install"],
+      "assets.build": ["cmd npm run build"],
+      "assets.watch": ["cmd npm run dev"]
     ]
   end
 end
